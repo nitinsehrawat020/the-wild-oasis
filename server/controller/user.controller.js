@@ -96,10 +96,11 @@ export async function loginUserController(req, res) {
     const refernceToken = await generateRefernceToken(user._id);
     const accessToken = generateAccessToken(user._id);
 
+    const isProduction = process.env.NODE_ENV === "production";
     const cookiesOption = {
       httpOnly: false, // Allow client JS to read it
-      secure: false, // Set to true if using HTTPS
-      sameSite: "Lax", // Better for local development than "None"
+      secure: isProduction, // HTTPS in production
+      sameSite: isProduction ? "None" : "Lax", // None for cross-origin in production
       maxAge: 24 * 60 * 60 * 1000,
     };
     res.cookie("accessToken", accessToken, cookiesOption);
