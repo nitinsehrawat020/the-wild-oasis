@@ -11,11 +11,15 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@azure-rest/ai-inference": "latest",
+    "@azure/core-auth": "latest",
+    "@azure/core-sse": "latest",
     "axios": "^1.11.0",
     "bcryptjs": "^3.0.2",
     "cloudinary": "^2.6.0",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
+    "date-fns": "^4.1.0",
     "dotenv": "^16.5.0",
     "express": "^5.1.0",
     "express-rate-limit": "^8.0.1",
@@ -29,9 +33,6 @@
     "nodemon": "^3.1.10",
     "openai": "^5.12.2",
     "react-hot-toast": "^2.5.2",
-    "resend": "^4.4.1",
-    "@azure-rest/ai-inference": "latest",
-    "@azure/core-auth": "latest",
-    "@azure/core-sse": "latest"
+    "resend": "^4.4.1"
   }
 }

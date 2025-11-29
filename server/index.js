@@ -12,6 +12,10 @@ import userRouter from "./router/user.route.js";
 import bookingsRouter from "./router/bookings.route.js";
 import cabinRouter from "./router/cabin.route.js";
 import settingRouter from "./router/settings.route.js";
+import {
+  refreshBookingData,
+  startBookingRefreshCron,
+} from "./utils/cronJobs.js";
 
 // Import models to ensure they are registered
 import "./models/guests.module.js";
@@ -25,12 +29,28 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express();
+
+const allowedOrigins = [
+  process.env.FRONTEND_URL,
+  "http://localhost:5173",
+  "https://the-wild-oasis-blue-six.vercel.app",
+].filter(Boolean);
+
 app.use(
   cors({
+    origin: function (origin, callback) {
+      // Allow requests with no origin (like mobile apps or curl requests)
+      if (!origin) return callback(null, true);
+      if (allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
     credentials: true,
-    methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
-    allowedHeaders: ["content-Type", "Authorization"],
-    origin: [process.env.FRONTEND_URL, "http://localhost:5173"],
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+    exposedHeaders: ["Set-Cookie"],
   })
 );
 
@@ -73,5 +93,8 @@ const PORT = 3000;
 connectDb().then(() => {
   app.listen(PORT, () => {
     console.log(`server is lisenting on the PORT ${PORT}`);
+
+    // Start the cron job for automatic booking refresh
+    startBookingRefreshCron();
   });
 });

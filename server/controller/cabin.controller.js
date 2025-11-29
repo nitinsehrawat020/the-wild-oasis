@@ -2,6 +2,7 @@ import CabinModel from "../models/cabins.module.js";
 import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
+import uploadImageCloundary from "../utils/uploadCloundary.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -18,11 +19,8 @@ export async function getCabins(req, res) {
       });
     }
 
-    // Add full image URL to each cabin
-    const cabinsWithImages = cabinsData.map((cabin) => ({
-      ...cabin,
-      image: `${process.env.SERVER_IP_ADDRESS}${cabin.image}`,
-    }));
+    // Return cabins with Cloudinary URLs (no modification needed)
+    const cabinsWithImages = cabinsData;
 
     return res.status(200).json({
       message: "data sent successfully",
@@ -62,13 +60,16 @@ export async function createCabin(req, res) {
       });
     }
 
+    // Upload image to Cloudinary
+    const uploadResult = await uploadImageCloundary(file, "cabins");
+
     const payload = {
       name,
       maxCapacity,
       regularPrice,
       discount,
       description,
-      image: file.filename, // Store only filename, not full URL
+      image: uploadResult.secure_url, // Store Cloudinary URL
     };
 
     const saveCabin = new CabinModel(payload);
