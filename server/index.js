@@ -43,7 +43,11 @@ app.use(helmet({ contentSecurityPolicy: false }));
 app.use(
   "/uploads",
   (req, res, next) => {
-    res.header("Access-Control-Allow-Origin", "http://localhost:5173");
+    res.header(
+      "Access-Control-Allow-Origin",
+      "http://localhost:5173",
+      process.env.FRONTEND_URL
+    );
     res.header("Access-Control-Allow-Methods", "GET");
     res.header("Cross-Origin-Resource-Policy", "cross-origin");
     next();
