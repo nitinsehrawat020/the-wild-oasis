@@ -116,14 +116,24 @@ export async function getBookingAfterDate(req, res) {
     const bookingData = await BookingModel.find({
       startDate: { $gte: new Date(date), $lte: today },
     })
+      .populate("cabinId")
+      .populate("guestId")
       .sort({ startDate: 1 })
       .lean();
+
+    // Transform data for frontend compatibility
+    const transformedData = bookingData.map(booking => ({
+      ...booking,
+      numNights: booking.numNight,
+      created_at: booking.createdAt, // SalesChart expects created_at
+      extrasPrice: booking.extraPrice || 0 // SalesChart expects extrasPrice (plural)
+    }));
 
     return res.status(200).json({
       message: "data sed sucessfully",
       success: true,
       error: false,
-      data: bookingData,
+      data: transformedData,
     });
   } catch (error) {
     return res.status(500).json({
@@ -150,13 +160,22 @@ export async function getStaysAfterDate(req, res) {
 
     const stayData = await BookingModel.find({
       startDate: { $lte: today, $gte: new Date(date) },
-    });
+    })
+      .populate("cabinId")
+      .populate("guestId")
+      .lean();
+
+    // Transform data to include numNights (frontend expects plural)
+    const transformedData = stayData.map(stay => ({
+      ...stay,
+      numNights: stay.numNight // Map numNight to numNights for frontend compatibility
+    }));
 
     return res.status(200).json({
       message: "data send successfully",
       success: true,
       error: false,
-      data: stayData,
+      data: transformedData,
     });
   } catch (error) {
     console.log(error);
@@ -171,12 +190,32 @@ export async function getStaysAfterDate(req, res) {
 
 export async function getStayTodaysActivity(req, res) {
   try {
+    // Get today's date at midnight
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    
+    // Get tomorrow's date at midnight
+    const tomorrow = new Date(today);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+
+    // Find bookings arriving today (unconfirmed) or departing today (checked-in)
     const todayActivity = await BookingModel.find({
       $or: [
-        { $and: [{ status: "unconfirmed" }, { startDate: new Date() }] },
-        { $and: [{ status: "checked-in" }, { startDate: new Date() }] },
+        // Arrivals: unconfirmed bookings starting today
+        { 
+          status: "unconfirmed",
+          startDate: { $gte: today, $lt: tomorrow }
+        },
+        // Departures: checked-in bookings ending today
+        { 
+          status: "checked-in",
+          endDate: { $gte: today, $lt: tomorrow }
+        },
       ],
-    });
+    })
+    .populate("cabinId")
+    .populate("guestId")
+    .sort({ startDate: 1 });
 
     return res.status(200).json({
       message: "data send successfuly",

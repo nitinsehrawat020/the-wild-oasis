@@ -61,6 +61,7 @@ export async function getStaysAfterDate(date) {
     ...SummaryApi.bookings.getStaysAfterDate,
     data: { date },
   });
+  console.log(res.data.data);
 
   return res.data.data;
 }
@@ -70,7 +71,6 @@ export async function getStaysTodayActivity() {
   const res = await Axios({
     ...SummaryApi.bookings.getStayTodaysActivity,
   });
-  console.log(res.data);
 
   return res.data.data;
 }
