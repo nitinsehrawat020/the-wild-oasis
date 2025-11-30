@@ -122,11 +122,11 @@ export async function getBookingAfterDate(req, res) {
       .lean();
 
     // Transform data for frontend compatibility
-    const transformedData = bookingData.map(booking => ({
+    const transformedData = bookingData.map((booking) => ({
       ...booking,
       numNights: booking.numNight,
       created_at: booking.createdAt, // SalesChart expects created_at
-      extrasPrice: booking.extraPrice || 0 // SalesChart expects extrasPrice (plural)
+      extrasPrice: booking.extraPrice || 0, // SalesChart expects extrasPrice (plural)
     }));
 
     return res.status(200).json({
@@ -166,9 +166,9 @@ export async function getStaysAfterDate(req, res) {
       .lean();
 
     // Transform data to include numNights (frontend expects plural)
-    const transformedData = stayData.map(stay => ({
+    const transformedData = stayData.map((stay) => ({
       ...stay,
-      numNights: stay.numNight // Map numNight to numNights for frontend compatibility
+      numNights: stay.numNight, // Map numNight to numNights for frontend compatibility
     }));
 
     return res.status(200).json({
@@ -193,7 +193,7 @@ export async function getStayTodaysActivity(req, res) {
     // Get today's date at midnight
     const today = new Date();
     today.setHours(0, 0, 0, 0);
-    
+
     // Get tomorrow's date at midnight
     const tomorrow = new Date(today);
     tomorrow.setDate(tomorrow.getDate() + 1);
@@ -202,20 +202,20 @@ export async function getStayTodaysActivity(req, res) {
     const todayActivity = await BookingModel.find({
       $or: [
         // Arrivals: unconfirmed bookings starting today
-        { 
+        {
           status: "unconfirmed",
-          startDate: { $gte: today, $lt: tomorrow }
+          startDate: { $gte: today, $lt: tomorrow },
         },
         // Departures: checked-in bookings ending today
-        { 
+        {
           status: "checked-in",
-          endDate: { $gte: today, $lt: tomorrow }
+          endDate: { $gte: today, $lt: tomorrow },
         },
       ],
     })
-    .populate("cabinId")
-    .populate("guestId")
-    .sort({ startDate: 1 });
+      .populate("cabinId")
+      .populate("guestId")
+      .sort({ startDate: 1 });
 
     return res.status(200).json({
       message: "data send successfuly",
