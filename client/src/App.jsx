@@ -17,6 +17,7 @@ import Booking from "./pages/Booking";
 import Checkin from "./pages/Checkin";
 import ProtectedRoute from "./ui/ProtectedRoute";
 import { DarkModeProvider } from "./features/context/DarkModeContext";
+import Ping from "./pages/Ping";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -53,6 +54,7 @@ function App() {
             </Route>
 
             <Route path="login" element={<Login />} />
+            <Route path="ping" element={<Ping />} />
             <Route path="*" element={<PageNotFound />} />
           </Routes>
         </BrowserRouter>

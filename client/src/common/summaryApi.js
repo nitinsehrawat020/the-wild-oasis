@@ -2,6 +2,7 @@ export const BASE_URL =
   import.meta.env.VITE_SERVER_URL || "http://localhost:3000";
 
 export const SummaryApi = {
+  ping: { ping: { url: "api/v1/ping", method: "GET" } },
   user: {
     register: {
       url: "api/v1/user/signup",

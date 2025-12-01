@@ -80,6 +80,13 @@ app.use("/api/v1/booking", bookingsRouter);
 app.use("/api/v1/cabin", cabinRouter);
 app.use("/api/v1/setting", settingRouter);
 
+app.get("/api/v1/ping", (req, res) => {
+  return res.status(200).json({
+    message: "hello from server",
+    success: "true",
+    error: false,
+  });
+});
 app.get("/", (req, res) => {
   return res.status(200).json({
     message: "hello from server",
