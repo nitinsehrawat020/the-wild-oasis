@@ -1,3 +1,4 @@
+import toast from "react-hot-toast";
 import Form from "../../ui/Form";
 import FormRow from "../../ui/FormRow";
 import Input from "../../ui/Input";
@@ -22,8 +23,9 @@ function UpdateSettingsForm() {
 
   function handleUpdate(e, field) {
     const { value } = e.target;
-    if (!value) return;
-    updateSetting({ [field]: value });
+    return toast.success("you don't have permission to upload the data");
+    // if (!value) return;
+    // updateSetting({ [field]: value });
   }
 
   if (isLoading) return <Spinner />;

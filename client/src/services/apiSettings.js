@@ -1,6 +1,5 @@
 import { SummaryApi } from "../common/summaryApi";
 import Axios from "../utils/axios";
-import supabase from "./supabase";
 
 export async function getSettings() {
   const res = await Axios({

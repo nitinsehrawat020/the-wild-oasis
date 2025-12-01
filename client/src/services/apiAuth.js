@@ -1,16 +1,12 @@
 import { SummaryApi } from "../common/summaryApi";
 import Axios from "../utils/axios";
-import supabase, { supabaseUrl } from "./supabase";
-
 export async function signup({ fullName, email, password }) {
-  const { error, data } = await supabase.auth.signUp({
+  const res = await Axios({
+    fullName,
     email,
     password,
-    options: { data: { fullName, avatar: "" } },
   });
-  if (error) throw new Error(error.message);
-
-  return data;
+  return res.data.data;
 }
 
 export async function login({ email, password }) {

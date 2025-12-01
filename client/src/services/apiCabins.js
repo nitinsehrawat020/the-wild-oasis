@@ -1,6 +1,5 @@
 import { SummaryApi } from "../common/summaryApi";
 import Axios from "../utils/axios";
-import supabase, { supabaseUrl } from "./supabase";
 
 export async function getCabins() {
   const res = await Axios({ ...SummaryApi.cabins.getCabins });

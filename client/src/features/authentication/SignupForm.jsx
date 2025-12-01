@@ -4,6 +4,7 @@ import Form from "../../ui/Form";
 import FormRow from "../../ui/FormRow";
 import Input from "../../ui/Input";
 import { useSignup } from "./useSignup";
+import toast from "react-hot-toast";
 
 // Email regex: /\S+@\S+\.\S+/
 
@@ -12,12 +13,14 @@ function SignupForm() {
   const { register, formState, getValues, handleSubmit, reset } = useForm();
   const { errors } = formState;
   function onSubmit({ fullName, email, password }) {
-    signup(
-      { email, password, fullName },
-      {
-        onSettled: reset,
-      }
-    );
+    return toast.success("you don't have permission to upload the data");
+
+    // signup(
+    //   { email, password, fullName },
+    //   {
+    //     onSettled: reset,
+    //   }
+    // );
   }
   return (
     <Form onSubmit={handleSubmit(onSubmit)}>

@@ -8,6 +8,7 @@ import FormRow from "../../ui/FormRow";
 import { useForm } from "react-hook-form";
 import { useCreateCabin } from "./useCreateCabin";
 import { useEditCabin } from "./useEditCabin";
+import toast from "react-hot-toast";
 
 function CreateCabinForm({ cabinToEdit = {}, onCloseModal }) {
   const { id: editId, ...editValues } = cabinToEdit;
@@ -26,30 +27,30 @@ function CreateCabinForm({ cabinToEdit = {}, onCloseModal }) {
   function onSubmit(data) {
     const image = typeof data.image === "string" ? data.image : data.image[0];
 
-    if (isEditSession)
-      editCabin(
-        { newCabindata: { ...data, image }, id: editId },
-        {
-          onSuccess: () => {
-            console.log("hello");
+    return toast.success(
+      "you don't have permission to create a cabin or edit the cabin"
+    );
 
-            reset();
-            onCloseModal?.();
-          },
-        }
-      );
-    else
-      createCabin(
-        { ...data, image: data.image[0] },
-        {
-          onSuccess: () => {
-            console.log("hello");
-
-            reset();
-            onCloseModal?.();
-          },
-        }
-      );
+    // if (isEditSession)
+    //   editCabin(
+    //     { newCabindata: { ...data, image }, id: editId },
+    //     {
+    //       onSuccess: () => {
+    //         reset();
+    //         onCloseModal?.();
+    //       },
+    //     }
+    //   );
+    // else
+    //   createCabin(
+    //     { ...data, image: data.image[0] },
+    //     {
+    //       onSuccess: () => {
+    //         reset();
+    //         onCloseModal?.();
+    //       },
+    //     }
+    //   );
   }
   function onError() {
     // console.log(errors);
